@@ -9,11 +9,11 @@ func binarySearch(data []int, query int, lowIndex int, highIndex int) int {
 		return -1
 	}
 	middle := int((lowIndex + highIndex) / 2)
-	if query == data[middle] {
-		return middle
-	} else if data[middle] > query {
+	if data[middle] > query {
 		return binarySearch(data, query, lowIndex, middle)
-	} else {
+	} else if data[middle] < query {
 		return binarySearch(data, query, middle+1, highIndex)
+	} else {
+		return middle
 	}
 }

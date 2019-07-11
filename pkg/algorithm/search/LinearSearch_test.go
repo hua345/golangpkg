@@ -21,9 +21,7 @@ func BenchmarkLinearSearch(b *testing.B) {
 	testData := sort.GenerateRand(randomCapacity)
 	b.StartTimer()             //重新开始时间
 	for i := 0; i < b.N; i++ { //use b.N for looping
-		b.StopTimer()
 		randomIndex := sort.GetRandomIndex(randomCapacity)
-		b.StartTimer()
 		LinearSearch(testData, testData[randomIndex])
 	}
 }
