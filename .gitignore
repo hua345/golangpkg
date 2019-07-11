@@ -2,3 +2,4 @@
 **.exe
 target/
 build/
+**.log
