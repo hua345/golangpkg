@@ -114,7 +114,26 @@ func TestEtcdStatus(t *testing.T) {
 		} else {
 			t.Log("endpoint: " + ep + " / Leader: false")
 		}
+	}
+}
 
+func TestEtcdTTL(t *testing.T) {
+	InitEtcd()
+
+	testkey := "nameLease"
+	testValue := "fang"
+	LeaseTTL := 5
+	// create a lease first,minimum lease TTL is 5-second
+	resp, err := EtcdClient.Grant(context.Background(), int64(LeaseTTL))
+	if err != nil {
+		t.Log("Unable to create lease")
+		t.Error(err)
+	}
+	// after 5 seconds, the key 'foo' will be removed
+	_, err = EtcdClient.Put(context.Background(), testkey, testValue, clientv3.WithLease(resp.ID))
+	if err != nil {
+		t.Log("Etcd Put WithLease Error")
+		t.Error(err)
 	}
 }
 

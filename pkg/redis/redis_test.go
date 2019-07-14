@@ -1,6 +1,9 @@
 package redis
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 // 单元测试
 func TestRedisSetGet(t *testing.T) {
@@ -20,6 +23,30 @@ func TestRedisSetGet(t *testing.T) {
 		t.Log("key ", key, "value ", value)
 		t.Log("key ", key, "result ", result)
 		t.Error("redis键值对测试失败")
+	}
+}
+
+func TestSetNX(t *testing.T) {
+	NewRedis()
+	key := "tryLockName"
+	value := "fangfang"
+	result, err := RedisClient.SetNX(key, value, 5*time.Second).Result()
+	if err != nil {
+		t.Error(err)
+	}
+	if true == result {
+		t.Log(result)
+		t.Log("获取Redis锁成功")
+	}
+	result, err = RedisClient.SetNX(key, value, 5*time.Second).Result()
+	if err != nil {
+		t.Error(err)
+	}
+	if false == result {
+		t.Log(result)
+		t.Log("获取Redis锁失败")
+	} else {
+		t.Error("获取锁出现错误")
 	}
 }
 

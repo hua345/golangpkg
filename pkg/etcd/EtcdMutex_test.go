@@ -26,5 +26,5 @@ func TestEtcdMutex(t *testing.T) {
 			defer etcdMutex.UnLock()
 		}()
 	}
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 }
