@@ -8,14 +8,15 @@ import (
 
 func TestEtcdMutex(t *testing.T) {
 	InitEtcd()
+	myLockKey := "myLock"
 	for i := 0; i < 10; i++ {
-		etcdMutex := &EtcdMutex{
-			TTL: 10,
-			Key: "lock",
-		}
 		//groutine1
 		go func() {
-			err := etcdMutex.Lock()
+			etcdMutex, err := NewLock(myLockKey, 5)
+			if err != nil {
+				t.Error("NewLock error")
+			}
+			err = etcdMutex.Lock()
 			if err != nil {
 				fmt.Println("groutine" + string(i) + "抢锁失败")
 				fmt.Println(err)

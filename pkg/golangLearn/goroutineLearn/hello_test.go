@@ -1,6 +1,9 @@
-package main
+package goroutineLearn
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 //prints to stdout and puts an int on channel
 func printHello(ch chan int) {
@@ -8,7 +11,7 @@ func printHello(ch chan int) {
 	//send a value on channel
 	ch <- 2
 }
-func main() {
+func TestHello(t *testing.T) {
 	//make a channel. You need to use the make function to create channels.
 	//channels can also be buffered where you can specify size. eg: ch := make(chan int, 2)
 	//that is out of the scope of this post.

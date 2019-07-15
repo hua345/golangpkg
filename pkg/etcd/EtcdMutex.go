@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go.etcd.io/etcd/clientv3"
 	"sync"
-	"time"
 )
 
 const (
@@ -25,42 +24,22 @@ type EtcdMutex struct {
 	txn        clientv3.Txn
 }
 
-func main() {
-	InitEtcd()
-	NewLock("")
-	for i := 0; i < 20; i++ {
-
-		//groutine1
-		go func() {
-			err := etcdMutex.Lock()
-			if err != nil {
-				fmt.Println("groutine" + string(i) + "抢锁失败")
-				fmt.Println(err)
-				return
-			}
-			fmt.Println("groutine" + string(i) + "抢锁成功")
-			time.Sleep(10 * time.Second)
-			defer etcdMutex.UnLock()
-		}()
-	}
-	time.Sleep(5 * time.Second)
-}
 func NewLock(key string, ttl int64) (*EtcdMutex, error) {
 	var err error
-	var ctx context.Context
+	ctx := context.TODO()
 	etcdMutex := &EtcdMutex{
 		TTL: ttl,
 		Key: key,
 	}
-
+	etcdMutex.mutex = new(sync.Mutex)
 	//创建事务
-	etcdMutex.txn = clientv3.NewKV(EtcdClient).Txn(context.TODO())
+	etcdMutex.txn = clientv3.NewKV(EtcdClient).Txn(ctx)
 	//上锁（创建租约，自动续租）
 	etcdMutex.lease = clientv3.NewLease(EtcdClient)
 	//设置一个ctx取消自动续租
-	ctx, etcdMutex.cancelFunc = context.WithCancel(context.TODO())
+	ctx, etcdMutex.cancelFunc = context.WithCancel(ctx)
 	//设置租约时间（过期时间）
-	leaseResp, err := etcdMutex.lease.Grant(context.TODO(), etcdMutex.TTL)
+	leaseResp, err := etcdMutex.lease.Grant(ctx, etcdMutex.TTL)
 	if err != nil {
 		return nil, err
 	}
@@ -69,11 +48,27 @@ func NewLock(key string, ttl int64) (*EtcdMutex, error) {
 
 	//自动续租（不停地往管道中扔租约信息）
 	leaseRespChan, err := etcdMutex.lease.KeepAlive(ctx, etcdMutex.leaseID)
-	//启动一个协程去监听
+	if err != nil {
+		panic(err)
+	}
+	//启动一个协程去监听续租情况 (不然一会儿就会写满keepalive的队列，导致大量异常日是志)
 	go listenLeaseChan(leaseRespChan)
 	return etcdMutex, nil
 }
-
+func listenLeaseChan(leaseRespChan <-chan *clientv3.LeaseKeepAliveResponse) {
+	var (
+		leaseKeepResp *clientv3.LeaseKeepAliveResponse
+	)
+	for {
+		select {
+		case leaseKeepResp = <-leaseRespChan:
+			if leaseKeepResp == nil {
+				fmt.Println("租约失效了")
+				return
+			}
+		}
+	}
+}
 func (em *EtcdMutex) Lock() error {
 	em.mutex.Lock()
 	for try := 1; try <= defaultTry; try++ {
@@ -89,12 +84,13 @@ func (em *EtcdMutex) Lock() error {
 			return nil
 		}
 		if !txnResp.Succeeded && try < defaultTry {
-			return fmt.Errorf("抢锁失败: %v", txnResp)
+			fmt.Println("抢锁失败: ", txnResp)
 		}
 	}
 	return nil
 }
 func (em *EtcdMutex) UnLock() {
+	em.mutex.Unlock()
 	em.cancelFunc()
 	_, err := em.lease.Revoke(context.TODO(), em.leaseID)
 	if err != nil {
