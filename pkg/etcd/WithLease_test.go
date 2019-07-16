@@ -42,7 +42,7 @@ func TestEtcdPutWithLease(t *testing.T) {
 		t.Error(err)
 	}
 	if len(getResp.Kvs) != 0 {
-		t.Error("after 5 seconds Key not removed")
+		t.Error("after 5 seconds myKey not removed")
 	}
 	// Output: number of keys: 0
 }

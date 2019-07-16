@@ -114,7 +114,7 @@ func Obtain(client RedisClient, key string, ttl time.Duration, opt *Options) (*L
 	return New(client).Obtain(key, ttl, opt)
 }
 
-// Key returns the redis key used by the lock.
+// myKey returns the redis key used by the lock.
 func (l *Lock) Key() string {
 	return l.key
 }
