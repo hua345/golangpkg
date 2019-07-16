@@ -56,12 +56,14 @@ func mutexWork(index int, wg *sync.WaitGroup, t *testing.T) {
 	defer sission1.Close()
 	mutex1 := concurrency.NewMutex(sission1, "/my-lock/")
 	// acquire lock for sission1
-	if err := mutex1.Lock(context.TODO()); err != nil {
-		t.Error(err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) //设置5s超时
+	defer cancel()
+	if err := mutex1.Lock(ctx); err != nil {
+		t.Log("获取分布式锁失败")
 	}
 	t.Log("acquired lock for sission", index)
-	time.Sleep(1 * time.Second)
-	if err := mutex1.Unlock(context.TODO()); err != nil {
+	time.Sleep(100 * time.Millisecond)
+	if err := mutex1.Unlock(ctx); err != nil {
 		t.Log(err)
 	}
 	t.Log("released lock for sission", index)
@@ -69,9 +71,9 @@ func mutexWork(index int, wg *sync.WaitGroup, t *testing.T) {
 func TestExampleMutex2(t *testing.T) {
 	InitEtcd()
 	wg := sync.WaitGroup{}
-	wg.Add(5)
+	wg.Add(10)
 	// create two separate sessions for lock competition
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 10; i++ {
 		go mutexWork(i, &wg, t)
 	}
 	wg.Wait()
