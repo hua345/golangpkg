@@ -49,22 +49,20 @@ func TestExampleMutex(t *testing.T) {
 }
 func mutexWork(index int, wg *sync.WaitGroup, t *testing.T) {
 	defer wg.Done()
-	sission1, err := concurrency.NewSession(EtcdClient)
+	sission1, err := concurrency.NewSession(EtcdClient, concurrency.WithTTL(5))
 	if err != nil {
 		t.Error(err)
 	}
 	defer sission1.Close()
 	mutex1 := concurrency.NewMutex(sission1, "/my-lock/")
 	// acquire lock for sission1
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) //设置5s超时
-	defer cancel()
-	if err := mutex1.Lock(ctx); err != nil {
-		t.Log("获取分布式锁失败")
+	if err := mutex1.Lock(context.TODO()); err != nil {
+		t.Error(err)
 	}
 	t.Log("acquired lock for sission", index)
-	time.Sleep(100 * time.Millisecond)
-	if err := mutex1.Unlock(ctx); err != nil {
-		t.Log(err)
+	time.Sleep(1000 * time.Millisecond)
+	if err := mutex1.Unlock(context.TODO()); err != nil {
+		t.Error(err)
 	}
 	t.Log("released lock for sission", index)
 }
