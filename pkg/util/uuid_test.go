@@ -14,3 +14,6 @@ func TestGetUUID(t *testing.T) {
 		t.Error(`UUID {uuidStr} length != 36`)
 	}
 }
+func TestUUID32(t *testing.T) {
+	t.Log("UUID32: ", GetUUID32())
+}
