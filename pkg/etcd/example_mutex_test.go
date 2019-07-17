@@ -76,3 +76,55 @@ func TestExampleMutex2(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+// 性能测试
+//go test -bench=.
+func BenchmarkEtcdLock(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	InitEtcd()
+	b.StartTimer()
+	lockKey := "myLock"
+	// b.N会根据函数的运行时间取一个合适的值
+	for i := 0; i < b.N; i++ {
+		sission1, err := concurrency.NewSession(EtcdClient, concurrency.WithTTL(5))
+		if err != nil {
+			b.Error(err)
+		}
+		defer sission1.Close()
+		mutex1 := concurrency.NewMutex(sission1, lockKey)
+		// acquire lock for sission1
+		if err := mutex1.Lock(context.TODO()); err != nil {
+			b.Error(err)
+		}
+		if err := mutex1.Unlock(context.TODO()); err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+// 并发性能测试
+//go test -bench=.
+func BenchmarkRedisLockParallel(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	InitEtcd()
+	b.StartTimer()
+	lockKey := "myLock"
+	// 测试一个对象或者函数在多线程的场景下面是否安全
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			sission1, err := concurrency.NewSession(EtcdClient, concurrency.WithTTL(5))
+			if err != nil {
+				b.Error(err)
+			}
+			defer sission1.Close()
+			mutex1 := concurrency.NewMutex(sission1, lockKey)
+			// acquire lock for sission1
+			if err := mutex1.Lock(context.TODO()); err != nil {
+				b.Error(err)
+			}
+			if err := mutex1.Unlock(context.TODO()); err != nil {
+				b.Error(err)
+			}
+		}
+	})
+}

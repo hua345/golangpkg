@@ -31,3 +31,47 @@ func TestRedisLock(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+// 性能测试
+//go test -bench=.
+func BenchmarkRedisLock(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	NewRedis()
+	b.StartTimer()
+	lockKey := "myLock"
+	// b.N会根据函数的运行时间取一个合适的值
+	for i := 0; i < b.N; i++ {
+		redisSession := NewRedisSession(RedisClient)
+		redisLock, err := redisSession.TryLock(lockKey, 10*time.Second)
+		if err != nil {
+			b.Error(err)
+		}
+		err = redisLock.Release()
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+// 并发性能测试
+//go test -bench=.
+func BenchmarkRedisLockParallel(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	NewRedis()
+	b.StartTimer()
+	lockKey := "myLock"
+	// 测试一个对象或者函数在多线程的场景下面是否安全
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			redisSession := NewRedisSession(RedisClient)
+			redisLock, err := redisSession.TryLock(lockKey, 10*time.Second)
+			if err != nil {
+				b.Error(err)
+			}
+			err = redisLock.Release()
+			if err != nil {
+				b.Error(err)
+			}
+		}
+	})
+}
