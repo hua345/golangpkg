@@ -15,6 +15,7 @@ func TestRedisLeaf(t *testing.T) {
 	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
+	defer redisLeaf.Close()
 	wg := sync.WaitGroup{}
 	wg.Add(100)
 	// create two separate sessions for lock competition
@@ -31,6 +32,7 @@ func BenchmarkLeaf(b *testing.B) {
 	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
+	defer redisLeaf.Close()
 	b.StartTimer()
 	// b.N会根据函数的运行时间取一个合适的值
 	for i := 0; i < b.N; i++ {
@@ -45,6 +47,7 @@ func BenchmarkRedisLeafParallel(b *testing.B) {
 	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
+	defer redisLeaf.Close()
 	b.StartTimer()
 	// 测试一个对象或者函数在多线程的场景下面是否安全
 	b.RunParallel(func(pb *testing.PB) {
