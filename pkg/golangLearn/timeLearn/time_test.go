@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+func TestWait(t *testing.T) {
+	retryTime := 2 * time.Second
+	retryTimer := time.NewTimer(retryTime)
+	select {
+	case <-retryTimer.C:
+		println("2s timer")
+		retryTimer.Stop()
+	}
+}
+
 func TestTime(t *testing.T) {
 	retryTime := 1 * time.Second
 	retryTimer := time.NewTimer(retryTime)

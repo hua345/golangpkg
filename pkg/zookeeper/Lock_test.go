@@ -71,51 +71,64 @@ func TestZkLock2(t *testing.T) {
 	wg.Wait()
 }
 
-//// 性能测试
-////go test -bench=.
-//func BenchmarkZkLock(b *testing.B) {
-//	b.StopTimer() //停止压力测试的时间计数
-//	NewZookeeper()
-//	defer ZKClient.Close()
-//	time.Sleep(5 * time.Second)
-//	b.StartTimer()
-//	lockPath := "/lockPath"
-//	acls := zk.WorldACL(zk.PermAll)
-//	// b.N会根据函数的运行时间取一个合适的值
-//	for i := 0; i < b.N; i++ {
-//		zkLock := zk.NewLock(ZKClient, lockPath, acls)
-//		err := zkLock.Lock()
-//		if err != nil {
-//			b.Error(err)
-//		}
-//		err = zkLock.Unlock()
-//		if err != nil {
-//			b.Error(err)
-//		}
-//	}
-//}
+// 性能测试
+//go test -bench=.
+func BenchmarkZkLock(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	NewZookeeper()
+	defer ZKClient.Close()
+	retryTime := 2 * time.Second
+	retryTimer := time.NewTimer(retryTime)
+	select {
+	case <-retryTimer.C:
+		b.Log("2s timer")
+		retryTimer.Stop()
+	}
+	b.StartTimer()
+	lockPath := "/lockPath"
+	acls := zk.WorldACL(zk.PermAll)
+	// b.N会根据函数的运行时间取一个合适的值
+	for i := 0; i < b.N; i++ {
+		zkLock := zk.NewLock(ZKClient, lockPath, acls)
+		err := zkLock.Lock()
+		if err != nil {
+			b.Error(err)
+		}
+		err = zkLock.Unlock()
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
 
-//// 并发性能测试
-////go test -bench=.
-//func BenchmarkZkLockParallel(b *testing.B) {
-//	b.StopTimer() //停止压力测试的时间计数
-//	NewZookeeper()
-//	defer ZKClient.Close()
-//	b.StartTimer()
-//	lockPath := "/lockPath"
-//	acls := zk.WorldACL(zk.PermAll)
-//	// 测试一个对象或者函数在多线程的场景下面是否安全
-//	b.RunParallel(func(pb *testing.PB) {
-//		for pb.Next() {
-//			zkLock := zk.NewLock(ZKClient, lockPath, acls)
-//			err := zkLock.Lock()
-//			if err != nil {
-//				b.Error(err)
-//			}
-//			err = zkLock.Unlock()
-//			if err != nil {
-//				b.Error(err)
-//			}
-//		}
-//	})
-//}
+// 并发性能测试
+//go test -bench=.
+func BenchmarkZkLockParallel(b *testing.B) {
+	b.StopTimer() //停止压力测试的时间计数
+	NewZookeeper()
+	defer ZKClient.Close()
+	retryTime := 2 * time.Second
+	retryTimer := time.NewTimer(retryTime)
+	select {
+	case <-retryTimer.C:
+		b.Log("2s timer")
+		retryTimer.Stop()
+	}
+	b.StartTimer()
+	lockPath := "/lockPath"
+	acls := zk.WorldACL(zk.PermAll)
+	// 测试一个对象或者函数在多线程的场景下面是否安全
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			zkLock := zk.NewLock(ZKClient, lockPath, acls)
+			err := zkLock.Lock()
+			if err != nil {
+				b.Error(err)
+			}
+			err = zkLock.Unlock()
+			if err != nil {
+				b.Error(err)
+			}
+		}
+	})
+}
