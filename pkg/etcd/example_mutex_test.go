@@ -60,7 +60,7 @@ func mutexWork(index int, wg *sync.WaitGroup, t *testing.T) {
 		t.Error(err)
 	}
 	t.Log("acquired lock for sission", index)
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
 	if err := mutex1.Unlock(context.TODO()); err != nil {
 		t.Error(err)
 	}
@@ -69,9 +69,9 @@ func mutexWork(index int, wg *sync.WaitGroup, t *testing.T) {
 func TestExampleMutex2(t *testing.T) {
 	InitEtcd()
 	wg := sync.WaitGroup{}
-	wg.Add(10)
+	wg.Add(100)
 	// create two separate sessions for lock competition
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		go mutexWork(i, &wg, t)
 	}
 	wg.Wait()

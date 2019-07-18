@@ -15,11 +15,11 @@ func redisLockWork(index int, wg *sync.WaitGroup, t *testing.T) {
 	}
 	t.Log("redis Lock Success", index)
 	time.Sleep(100 * time.Millisecond)
-	t.Log("released lock for session", index)
 	err = redisLock.Release()
 	if err != nil {
 		t.Log(err)
 	}
+	t.Log("released lock for session", index)
 }
 func TestRedisLock(t *testing.T) {
 	NewRedis()
