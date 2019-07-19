@@ -8,55 +8,46 @@ import (
 func TestWatch(t *testing.T) {
 	NewZookeeper()
 	defer ZKClient.Close()
-	zkPath := "/zkWatchTest"
+	zkLock := "/myZkLock"
+	zkLockSub := zkLock + "/lock"
 	zkValue := []byte("fangfang")
 	acls := zk.WorldACL(zk.PermAll)
 	//exist
-	exist, _, err := ZKClient.Exists(zkPath)
+	exist, _, err := ZKClient.Exists(zkLock)
 	if err != nil {
 		t.Error(err)
 	}
-	t.Log(zkPath, exist)
-
-	if exist {
-		// delete
-		err = ZKClient.Delete(zkPath, -1)
+	t.Log(zkLock, exist)
+	if !exist {
+		path, err := ZKClient.Create(zkLock, zkValue, 0, acls)
 		if err != nil {
 			t.Error(err)
 		}
+		t.Log(path)
 	}
-	children, _, childCh, err := ZKClient.ChildrenW("/")
+	// 监听子节点
+	children, _, childCh, err := ZKClient.ChildrenW(zkLock)
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(children)
-
-	path, err := ZKClient.Create(zkPath, zkValue, 0, acls)
+	// 创建临时的且有序的子节点
+	for i := 0; i < 10; i++ {
+		path, err := ZKClient.Create(zkLockSub, zkValue, 3, acls)
+		if err != nil {
+			t.Error(err)
+		}
+		t.Log(path)
+		select {
+		case event := <-childCh:
+			t.Log("path:", event.Path)
+			t.Log("type:", event.Type.String())
+			t.Log("state:", event.State.String())
+		}
+	}
+	children, _, err = ZKClient.Children(zkLock)
 	if err != nil {
 		t.Error(err)
 	}
-	t.Log(path)
-	select {
-	case event := <-childCh:
-		t.Log("path:", event.Path)
-		t.Log("type:", event.Type.String())
-		t.Log("state:", event.State.String())
-	}
-	children, _, childCh, err = ZKClient.ChildrenW(zkPath)
-	if err != nil {
-		t.Error(err)
-	}
-
-	// delete
-	err = ZKClient.Delete(zkPath, -1)
-	if err != nil {
-		t.Error(err)
-	}
-
-	select {
-	case event := <-childCh:
-		t.Log("path:", event.Path)
-		t.Log("type:", event.Type.String())
-		t.Log("state:", event.State.String())
-	}
+	t.Log(children)
 }
