@@ -10,4 +10,5 @@ go get go.etcd.io/etcd/clientv3
 go get github.com/samuel/go-zookeeper
 go get github.com/hashicorp/consul
 go get github.com/olivere/elastic
+go get github.com/hudl/fargo
 ```

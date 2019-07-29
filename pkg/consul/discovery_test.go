@@ -12,7 +12,7 @@ func TestRegister(t *testing.T) {
 	serviceAddress := "192.168.137.128"
 	servicePort := 8080
 	const serviceName = "gin-service"
-	const serviceId = "gin-service03"
+	const serviceId = "gin-service02"
 	//创建一个新服务。
 	registration := &api.AgentServiceRegistration{
 		ID:      serviceId,

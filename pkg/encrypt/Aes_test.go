@@ -6,8 +6,8 @@ import (
 )
 
 func TestAES(t *testing.T) {
-	var aeskey = []byte("321423u9y8d2fwfl")
-	data := []byte("fang")
+	var aeskey = []byte("fangfangfangfang")
+	data := []byte("fangfang")
 	xpass, err := AesEncrypt(data, aeskey)
 	if err != nil {
 		t.Log(err)
