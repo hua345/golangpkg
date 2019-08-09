@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"golangpkg/pkg/redis"
@@ -6,25 +6,20 @@ import (
 )
 
 func TestInsert(t *testing.T) {
-	NewMysqlDb()
+	NewPostgresDB()
 	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
 	bookId := leaf.NextId()
 	t.Log(bookId)
 	// 预备表达式 用来优化SQL查询 提高性能 减少SQL注入的风险
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := postgresDB.Prepare("insert INTO book(id, book_name,price,book_desc) values($1,$2,$3,$4)")
 	if err != nil {
 		t.Error(err)
 	}
-	result, err := stmt.Exec(bookId, "断舍离", "20.3", "断舍离是一本很好的书")
+	result, err := stmt.Exec(bookId, "断舍离", 20.3, "断舍离是一本很好的书")
 	if err != nil {
 		t.Error(err)
 	}
-	lastInsertID, err := result.LastInsertId()
-	if err != nil {
-		t.Error(err)
-	}
-	t.Log("LastInsertID:", lastInsertID)
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		t.Error(err)
@@ -36,10 +31,10 @@ func TestInsert(t *testing.T) {
 //go test -bench=.
 func BenchmarkInsert(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
-	NewMysqlDb()
+	NewPostgresDB()
 	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := postgresDB.Prepare("insert INTO book(id, book_name,price,book_desc) values($1,$2,$3,$4)")
 	if err != nil {
 		b.Error(err)
 	}
@@ -65,10 +60,10 @@ func BenchmarkInsert(b *testing.B) {
 //go test -bench=.
 func BenchmarkInsertParallel(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
-	NewMysqlDb()
+	NewPostgresDB()
 	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := postgresDB.Prepare("insert INTO book(id, book_name,price,book_desc) values($1,$2,$3,$4)")
 	if err != nil {
 		b.Error(err)
 	}

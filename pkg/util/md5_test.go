@@ -11,6 +11,7 @@ func ExampleEncodeMD5() {
 // 单元测试
 // go test -v
 func TestEncodeMD5(t *testing.T) {
+	t.Log(EncodeMD5("123456"))
 	if EncodeMD5("hello") != "5d41402abc4b2a76b9719d911017c592" {
 		t.Error(`EncodeMD5("hello") != "5d41402abc4b2a76b9719d911017c592"`)
 	}
