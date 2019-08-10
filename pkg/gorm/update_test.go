@@ -5,9 +5,11 @@ import "testing"
 func TestUpdate(t *testing.T) {
 	NewGorm()
 
-	var user User
 	// Update single attribute if it is changed
-	gormDB.Model(&user).Update("name", "hello")
-	// UPDATE users SET name='hello', updated_at='2013-11-17 21:34:10' WHERE id=111;
-	t.Log(user)
+	gormDB.Model(User{}).Update("name", "hello")
+	// UPDATE users SET name='hello';
+
+	// Update single attribute with combined conditions
+	gormDB.Model(User{}).Where("age >= ?", 20).Update("name", "fangfang")
+
 }
