@@ -33,8 +33,12 @@ const db_URL = "springuser:123456@tcp(192.168.137.128:3306)/db_example?charset=u
 
 var mysqlDB *sql.DB
 
+// In order to handle time.Time correctly, you need to include parseTime as a parameter.
+// In order to fully support UTF-8 encoding, you need to change charset=utf8 to charset=utf8mb4
 func NewMysqlDb() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mysqlConfig.UserName, mysqlConfig.Password, mysqlConfig.Host, mysqlConfig.Port, mysqlConfig.Database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		mysqlConfig.UserName, mysqlConfig.Password, mysqlConfig.Host,
+		mysqlConfig.Port, mysqlConfig.Database)
 	var err error
 	mysqlDB, err = sql.Open("mysql", dsn)
 	if err != nil {

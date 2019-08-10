@@ -1,8 +1,8 @@
-package postgres
+package gorm
 
 import (
-	"database/sql"
 	"fmt"
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
 
@@ -22,20 +22,22 @@ var postgresConfig = &PostgresConfig{
 	Database: "fangdb",
 }
 
-var postgresDB *sql.DB
+var gormDB *gorm.DB
 
-func NewPostgresDB() {
+func NewGorm() {
 	// sslmode就是安全验证模式;
 	// sslmode=disable
 	// sslmode=verify-full
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
 	var err error
-	postgresDB, err = sql.Open("postgres", dsn)
+	gormDB, err = gorm.Open("postgres", dsn)
 	if err != nil {
-		fmt.Printf("Open mysql failed,err:%v\n", err)
+		fmt.Printf("Open gorm failed,err:%v\n", err)
 		return
 	}
-	postgresDB.SetMaxOpenConns(1024)
-	postgresDB.SetMaxIdleConns(16)
+	gormDB.DB().SetMaxIdleConns(16)
+	gormDB.DB().SetMaxOpenConns(128)
+
+	// 全局禁用表名复数
+	gormDB.SingularTable(true)
 }

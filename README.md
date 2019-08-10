@@ -3,6 +3,7 @@
 ```
 go get -u github.com/go-sql-driver/mysql
 go get -u github.com/lib/pq
+go get -u github.com/jinzhu/gorm
 go get github.com/go-redis/redis
 go get github.com/gomodule/redigo
 go get github.com/satori/go.uuid
