@@ -38,7 +38,7 @@ func NewGorm() {
 	gormDB.DB().SetMaxIdleConns(16)
 	gormDB.DB().SetMaxOpenConns(128)
 	// 启用Logger，显示详细日志
-	gormDB.LogMode(true)
+	//gormDB.LogMode(true)
 	// 全局禁用表名复数
 	gormDB.SingularTable(true)
 }
