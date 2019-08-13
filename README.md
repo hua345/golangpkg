@@ -12,6 +12,7 @@ go get github.com/dgrijalva/jwt-go
 go get go.etcd.io/etcd/clientv3
 go get github.com/samuel/go-zookeeper
 go get github.com/hashicorp/consul
+go get -u github.com/segmentio/kafka-go
 go get github.com/olivere/elastic
 go get github.com/hudl/fargo
 #打开浏览器
