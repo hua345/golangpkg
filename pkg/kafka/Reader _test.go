@@ -16,6 +16,11 @@ func TestReader(t *testing.T) {
 		MinBytes:  10e3, // 10KB
 		MaxBytes:  10e6, // 10MB
 	})
+	// (*Reader).SetOffset will return an error when GroupID is set
+	//(*Reader).Offset will always return -1 when GroupID is set
+	//(*Reader).Lag will always return -1 when GroupID is set
+	//(*Reader).ReadLag will return an error when GroupID is set
+	//(*Reader).Stats will return a partition of -1 when GroupID is set
 	err := reader.SetOffset(26)
 	if err != nil {
 		t.Error(err)
