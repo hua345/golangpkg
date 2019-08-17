@@ -2,8 +2,15 @@ package redis
 
 import "testing"
 
+//# 对没有订阅者的频道发送信息
+//redis> publish bad_channel "can any body hear me?"
+//(integer) 0
+//# 向有一个订阅者的频道发送信息
+//redis> publish msg "good morning"
+//(integer) 1
 func TestPublish(t *testing.T) {
 	NewRedis()
+	// 接收到信息 message 的订阅者数量
 	pubResult := RedisClient.Publish("mychannel", "hello")
 	if pubResult.Err() != nil {
 		t.Error(pubResult.Err())

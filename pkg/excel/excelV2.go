@@ -2,20 +2,21 @@ package excel
 
 import (
 	"fmt"
-	"ginExample/model"
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"golangpkg/pkg/excel/drawModel"
+	"path"
 	"strconv"
 )
 
-var DrawResultExcelV2 = "./upload/drawResultV2.xlsx"
+var DrawResultExcelV2 = "drawResultV2.xlsx"
 
-func ParseExcelV2(excelPath string) []model.Company {
+func ParseExcelV2(excelPath string) []drawModel.Company {
 	excelFile, err := excelize.OpenFile(excelPath)
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	var companyList []model.Company
+	var companyList []drawModel.Company
 	for _, value := range excelFile.GetSheetMap() {
 		rows, err := excelFile.GetRows(value)
 		if err != nil {
@@ -24,7 +25,7 @@ func ParseExcelV2(excelPath string) []model.Company {
 		if len(rows) <= 2 {
 			continue
 		}
-		company := model.Company{}
+		company := drawModel.Company{}
 		var typeRow []string
 		for index, row := range rows {
 			if index == 0 {
@@ -41,7 +42,7 @@ func ParseExcelV2(excelPath string) []model.Company {
 			for colIndex, colCell := range row {
 				typeValue := typeRow[colIndex]
 				if len(colCell) != 0 && len(typeValue) != 0 {
-					user := model.User{
+					user := drawModel.User{
 						Name:      colCell,
 						Type:      typeValue,
 						TypeIndex: colIndex,
@@ -54,7 +55,7 @@ func ParseExcelV2(excelPath string) []model.Company {
 	}
 	return companyList
 }
-func CreateExcelV2(drawResult *model.DrawResult) {
+func CreateExcelV2(drawResult *drawModel.DrawResult, savePath string) {
 	excelFile := excelize.NewFile()
 	// Create a new sheet.
 	excelFile.SetSheetName(excelFile.GetSheetName(1), drawResult.CompanyName)
@@ -110,7 +111,7 @@ func CreateExcelV2(drawResult *model.DrawResult) {
 		}
 	}
 	// Save xlsx file by the given path.
-	err = excelFile.SaveAs(DrawResultExcelV2)
+	err = excelFile.SaveAs(path.Join(savePath, DrawResultExcelV2))
 	if err != nil {
 		panic(err)
 	}
