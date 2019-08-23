@@ -1,5 +1,6 @@
 # 参考
 
+- [https://www.mysql.com/](https://www.mysql.com/)
 - [https://github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)
 
 ## 安装
