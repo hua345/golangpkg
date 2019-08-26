@@ -1,0 +1,19 @@
+# 参考
+
+- [RabbitMQ之Qos prefetch](https://www.jianshu.com/p/4d043d3045ca)
+
+> 实际使用RabbitMQ过程中，如果完全不配置QoS，这样Rabbit会尽可能快速地
+发送队列中的所有消息到client端。因为consumer在本地缓存所有的message，
+从而极有可能导致OOM或者导致服务器内存不足影响其它进程的正常运行。所以我们
+需要通过设置Qos的prefetch count来控制consumer的流量。同时设置得当也会提高consumer的吞吐量。
+
+## prefetch与消息投递
+
+prefetch允许为每个consumer指定最大的unacked messages数目。
+简单来说就是用来指定一个consumer一次可以从Rabbit中获取多少条message并缓存在client中(RabbitMQ提供的各种语言的client library)。
+一旦缓冲区满了，Rabbit将会停止投递新的message到该consumer中直到它发出ack。
+假设prefetch值设为10，共有两个consumer。意味着每个consumer每次会从queue中预抓取 10 条消息到本地缓存着等待消费。
+同时该channel的unacked数变为20。而Rabbit投递的顺序是，先为consumer1投递满10个message，再往consumer2投递10个message。
+如果这时有新message需要投递，先判断channel的unacked数是否等于20，如果是则不会将消息投递到consumer中，message继续呆在queue中。
+之后其中consumer对一条消息进行ack，unacked此时等于19，Rabbit就判断哪个consumer的unacked少于10，就投递到哪个consumer中。
+总的来说，consumer负责不断处理消息，不断ack，然后只要unacked数少于prefetch * consumer数目，broker就不断将消息投递过去。
