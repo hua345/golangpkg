@@ -11,13 +11,20 @@
 ```
 go get github.com/streadway/amqp
 ```
-## Publish/Subscribe
+
+## [Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-go.html)
+
+Distributing tasks among workers (the competing consumers pattern)
+
+![python-five](./img/python-two.png)
+
+## [Publish/Subscribe](https://www.rabbitmq.com/tutorials/tutorial-three-go.html)
 
 Sending messages to many consumers at once
 
 ![python-five](./img/python-three.png)
 
-## Routing
+## [Routing](https://www.rabbitmq.com/tutorials/tutorial-four-go.html)
 
 Receiving messages selectively
 
