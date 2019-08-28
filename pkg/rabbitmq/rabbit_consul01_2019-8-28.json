@@ -1,0 +1,156 @@
+{
+  "rabbit_version": "3.6.15",
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "pgTj1kXlXPu8SucIHlAb21eBwJ3ul/HGZv4JOYueR3eyOyIx",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "global_parameters": [
+    {
+      "name": "cluster_name",
+      "value": "rabbit@localhost"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "fangDirectQue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "fangQue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "loveTopicQue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "fangQue2",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "fangTopicQue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "loveDirectQue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "fangDirect",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "fangTopic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "fang",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "fang",
+      "vhost": "/",
+      "destination": "fangQue",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "fang",
+      "vhost": "/",
+      "destination": "fangQue2",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "fangDirect",
+      "vhost": "/",
+      "destination": "fangDirectQue",
+      "destination_type": "queue",
+      "routing_key": "fang",
+      "arguments": {}
+    },
+    {
+      "source": "fangDirect",
+      "vhost": "/",
+      "destination": "loveDirectQue",
+      "destination_type": "queue",
+      "routing_key": "love",
+      "arguments": {}
+    },
+    {
+      "source": "fangTopic",
+      "vhost": "/",
+      "destination": "fangTopicQue",
+      "destination_type": "queue",
+      "routing_key": "fang.*",
+      "arguments": {}
+    },
+    {
+      "source": "fangTopic",
+      "vhost": "/",
+      "destination": "loveTopicQue",
+      "destination_type": "queue",
+      "routing_key": "love.*",
+      "arguments": {}
+    }
+  ]
+}

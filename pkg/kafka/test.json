@@ -1,0 +1,51 @@
+{
+  Dials: 1
+  Writes: 1
+  Messages: 1
+  Bytes: 13
+  Rebalances: 0
+  Errors: 0
+  DialTime: {
+    Avg: 33.5907ms
+    Min: 33.5907ms
+    Max: 33.5907ms
+  }
+  WriteTime: {
+    Avg: 108.3045ms
+    Min: 108.3045ms
+    Max: 108.3045ms
+  }
+  WaitTime: {
+    Avg: 23.5352ms
+    Min: 23.5352ms
+    Max: 23.5352ms
+  }
+  Retries: {
+    Avg: 0
+    Min: 0
+    Max: 0
+  }
+  BatchSize: {
+    Avg: 1
+    Min: 1
+    Max: 1
+  }
+  BatchBytes: {
+    Avg: 35
+    Min: 35
+    Max: 35
+  }
+  MaxAttempts: 10
+  MaxBatchSize: 100
+  BatchTimeout: 30ms
+  ReadTimeout: 10s
+  WriteTimeout: 10s
+  RebalanceInterval: 15s
+  RequiredAcks: 0
+  Async: false
+  QueueLength: 0
+  QueueCapacity: 100
+  ClientID: Topic
+  :
+  love
+}

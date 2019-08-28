@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-func TestConsume(t *testing.T) {
+func TestConnectionConsume(t *testing.T) {
 	// to consume messages
-	conn, _ := kafka.DialLeader(context.Background(), "tcp", kafkaLeaderBroker, kafkaTopic, kafkaPartition)
+	conn, _ := kafka.DialLeader(context.Background(), "tcp", kafkaLeaderBroker, kafkaTopic, 1)
 
 	err := conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	if err != nil {
