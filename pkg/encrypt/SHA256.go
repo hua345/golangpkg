@@ -6,8 +6,8 @@ import (
 )
 
 func EncodeSHA256(value string) string {
-	m := sha256.New()
-	m.Write([]byte(value))
+	shaHash := sha256.New()
+	shaHash.Write([]byte(value))
 
-	return hex.EncodeToString(m.Sum(nil))
+	return hex.EncodeToString(shaHash.Sum(nil))
 }

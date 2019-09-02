@@ -10,7 +10,7 @@ func TestEncrypy(t *testing.T) {
 		"name": "fang",
 		"age":  20,
 	}
-	requestParam, err := Encrypy(param)
+	requestParam, err := Encrypt(param)
 	if err != nil {
 		t.Error(err)
 	}
