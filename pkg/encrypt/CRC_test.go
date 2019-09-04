@@ -41,6 +41,7 @@ func TestCRC(t *testing.T) {
 func TestCRC16(t *testing.T) {
 	data := []byte("name")
 	checksum := CRC16CheckSum(data)
+	// redis crc16 name 结果为 5798
 	t.Log(checksum % 16384)
 	t.Logf("checksum: %X", checksum)
 	t.Log("Little-Endian", biu.ToBinaryString(checksum))
