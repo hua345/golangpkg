@@ -2,7 +2,7 @@ package redis
 
 import (
 	"errors"
-	"golangpkg/pkg/util"
+	"github.com/hua345/golangpkg/pkg/util"
 	"time"
 
 	"github.com/go-redis/redis"

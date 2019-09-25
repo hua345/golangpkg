@@ -9,4 +9,6 @@ func TestEncodeSHA256(t *testing.T) {
 	if EncodeSHA256(name) != result {
 		t.Error("SHA256 Failed")
 	}
+	t.Log(EncodeSHA256("111111"))
+	t.Log(EncodeSHA256("qq111111"))
 }
