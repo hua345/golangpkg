@@ -1,7 +1,7 @@
 package search
 
 import (
-	"golangpkg/pkg/algorithm/sort"
+	"github.com/hua345/golangpkg/pkg/algorithm/sort"
 	"testing"
 )
 
