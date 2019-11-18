@@ -8,7 +8,7 @@ import (
 
 func work(ctx context.Context, t *testing.T) {
 	for {
-		time.Sleep(1 * time.Second)
+		time.Sleep(100 * time.Millisecond)
 		select {
 		// we received the signal of cancelation in this channel
 		case <-ctx.Done():
@@ -21,19 +21,19 @@ func work(ctx context.Context, t *testing.T) {
 }
 func TestWithCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
-	//每1秒work一下，同时会判断ctx是否被取消了，如果是就退出
+	//每0.1秒work一下，同时会判断ctx是否被取消了，如果是就退出
 	go work(ctx, t)
-	//10秒后取消doStuff
-	time.Sleep(10 * time.Second)
+	//1秒后取消doStuff
+	time.Sleep(1 * time.Second)
 	cancel()
 }
 
 func TestWithTimeout(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//每1秒work一下，同时会判断ctx是否被取消了，如果是就退出
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	//每0.1秒work一下，同时会判断ctx是否被取消了，如果是就退出
 	go work(ctx, t)
-	//10秒后取消doStuff
-	time.Sleep(10 * time.Second)
+	//2秒后取消doStuff
+	time.Sleep(2 * time.Second)
 	cancel()
 }
 

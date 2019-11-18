@@ -32,5 +32,7 @@ jobs:
         run: cd pkg/golang && go test ./...
       - name: test jwt
         run: cd pkg/jwt && go test .
+      - name: test patterns
+        run: cd pkg/patterns && go test ./...
       - name: test util
         run: cd pkg/util && go test .

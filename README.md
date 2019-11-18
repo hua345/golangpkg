@@ -1,5 +1,8 @@
 # 测试驱动学习库
 
+![badge.svg](https://github.com/hua345/golangpkg/workflows/Go/badge.svg)
+[![Build Status](https://travis-ci.com/hua345/golangpkg.svg?branch=master)](https://travis-ci.com/hua345/golangpkg)
+
 - [algorithm](./pkg/algorithm)
 - [consul](./pkg/consul)
 - [elasticsearch](./pkg/elasticsearch)

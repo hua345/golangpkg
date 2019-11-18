@@ -3,6 +3,9 @@ language: go
 go:
   - 1.13.x
 
+script:
+  - go version
+
 jobs:
   include:
     - stage: test algorithm
@@ -13,5 +16,8 @@ jobs:
       script: cd pkg/golang && go test ./...
     - stage: test jwt
       script: cd pkg/jwt && go test .
+    - stage: test patterns
+      script: cd pkg/patterns && go test ./...
     - stage: test util
       script: cd pkg/util && go test .
+

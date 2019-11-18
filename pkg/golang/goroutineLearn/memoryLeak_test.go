@@ -10,10 +10,10 @@ func TestLeak(t *testing.T) {
 
 	// 10000: 80M左右
 	for i := 0; i < 10000; i++ {
-		go func() { <-make(chan int) } () // 滥竽充数的, Goroutine 泄露
+		go func() { <-make(chan int) }() // 滥竽充数的, Goroutine 泄露
 	}
-	go func() {} () // 滥竽充数的, 但不是 Goroutine 泄露
+	go func() {}() // 滥竽充数的, 但不是 Goroutine 泄露
 
-	time.Sleep(30 * time.Second)
+	time.Sleep(1 * time.Second)
 	t.Log("Done")
 }

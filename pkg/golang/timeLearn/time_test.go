@@ -6,11 +6,11 @@ import (
 )
 
 func TestWait(t *testing.T) {
-	retryTime := 2 * time.Second
+	retryTime := 1 * time.Second
 	retryTimer := time.NewTimer(retryTime)
 	select {
 	case <-retryTimer.C:
-		println("2s timer")
+		println("1s timer")
 		retryTimer.Stop()
 	}
 }
@@ -19,7 +19,7 @@ func TestTime(t *testing.T) {
 	retryTime := 1 * time.Second
 	retryTimer := time.NewTimer(retryTime)
 	defer retryTimer.Stop()
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 2; i++ {
 		select {
 		case <-retryTimer.C:
 			println("1s timer")
@@ -30,7 +30,7 @@ func TestTime(t *testing.T) {
 
 func TestSleep(t *testing.T) {
 	retryTime := 1 * time.Second
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 2; i++ {
 		time.Sleep(retryTime)
 		println("after 1s")
 	}
