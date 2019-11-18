@@ -7,10 +7,8 @@ script:
   - go version
 
 before_install:
-  - go version
-#all: build
-#build:
-#  GOARCH=amd64 go version
+  - go get -v ./...
+
 jobs:
   include:
     - stage: test algorithm
