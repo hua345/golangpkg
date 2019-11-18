@@ -3,7 +3,7 @@ package excel
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
-	"golangpkg/pkg/excel/drawModel"
+	"github.com/hua345/golangpkg/pkg/excel/drawModel"
 	"path"
 	"strconv"
 )
