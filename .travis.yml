@@ -1,0 +1,17 @@
+language: go
+
+go:
+  - 1.13.x
+
+jobs:
+  include:
+    - stage: test algorithm
+      script: cd pkg/algorithm && go test -v ./...
+    - stage: test encrypt
+      script: cd pkg/encrypt && go test -v ./...
+    - stage: test golang
+      script: cd pkg/golang && go test -v ./...
+    - stage: test jwt
+      script: cd pkg/jwt && go test -v ./...
+    - stage: test util
+      script: cd pkg/util && go test -v ./...
