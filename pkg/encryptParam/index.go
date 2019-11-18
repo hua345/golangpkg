@@ -3,8 +3,8 @@ package encryptParam
 import (
 	"encoding/base64"
 	"encoding/json"
-	"golangpkg/pkg/encrypt"
-	"golangpkg/pkg/util"
+	"github.com/hua345/golangpkg/pkg/encrypt"
+	"github.com/hua345/golangpkg/pkg/util"
 	"time"
 )
 

@@ -3,7 +3,7 @@ package jwt
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"golangpkg/pkg/util"
+	"github.com/hua345/golangpkg/pkg/util"
 	"time"
 )
 

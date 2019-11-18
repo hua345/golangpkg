@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"golangpkg/pkg/redis"
+	"github.com/hua345/golangpkg/pkg/redis"
 	"testing"
 )
 

@@ -1,7 +1,7 @@
 package excel
 
 import (
-	"golangpkg/pkg/excel/drawModel"
+	"github.com/hua345/golangpkg/pkg/excel/drawModel"
 	"testing"
 )
 

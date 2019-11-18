@@ -2,10 +2,9 @@ package redis
 
 import (
 	"errors"
+	"github.com/go-redis/redis"
 	"github.com/hua345/golangpkg/pkg/util"
 	"time"
-
-	"github.com/go-redis/redis"
 )
 
 var (

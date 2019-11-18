@@ -3,8 +3,8 @@ package encrypt
 import (
 	"bytes"
 	"encoding/binary"
+	"github.com/hua345/golangpkg/pkg/util"
 	"github.com/imroc/biu"
-	"golangpkg/pkg/util"
 	"testing"
 )
 
