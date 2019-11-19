@@ -8,7 +8,7 @@ import (
 func TestSelectOne(t *testing.T) {
 	NewMysqlDb()
 	book := new(Book)
-	row := mysqlDB.QueryRow("select * from book where book_name=?", "断舍离")
+	row := GetInstance().QueryRow("select * from book where book_name=?", "断舍离")
 	//row.scan中的字段必须是按照数据库存入字段的顺序，否则报错
 	err := row.Scan(&book.Id, &book.BookName, &book.Price, &book.BookDesc)
 	if err != nil {
@@ -19,7 +19,7 @@ func TestSelectOne(t *testing.T) {
 func TestSelectMulti(t *testing.T) {
 	NewMysqlDb()
 	book := new(Book)
-	rows, err := mysqlDB.Query("select * from book where book_name=?", "断舍离")
+	rows, err := GetInstance().Query("select * from book where book_name=?", "断舍离")
 	if err != nil {
 		t.Error()
 	}
@@ -53,7 +53,7 @@ func BenchmarkSelect(b *testing.B) {
 	// b.N会根据函数的运行时间取一个合适的值
 	for i := 0; i < b.N; i++ {
 		book := new(Book)
-		row := mysqlDB.QueryRow("select * from book where book_name=?", "断舍离")
+		row := GetInstance().QueryRow("select * from book where book_name=?", "断舍离")
 		//row.scan中的字段必须是按照数据库存入字段的顺序，否则报错
 		err := row.Scan(&book.Id, &book.BookName, &book.Price, &book.BookDesc)
 		if err != nil {
@@ -71,7 +71,7 @@ func BenchmarkSelectByIndex(b *testing.B) {
 	// b.N会根据函数的运行时间取一个合适的值
 	for i := 0; i < b.N; i++ {
 		book := new(Book)
-		row := mysqlDB.QueryRow("select * from book where id=?", 19001)
+		row := GetInstance().QueryRow("select * from book where book_name=?", "断舍离")
 		//row.scan中的字段必须是按照数据库存入字段的顺序，否则报错
 		err := row.Scan(&book.Id, &book.BookName, &book.Price, &book.BookDesc)
 		if err != nil {
@@ -90,7 +90,7 @@ func BenchmarkSelectParallel(b *testing.B) {
 	book := new(Book)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			row := mysqlDB.QueryRow("select * from book where book_name=?", "断舍离")
+			row := GetInstance().QueryRow("select * from book where book_name=?", "断舍离")
 			//row.scan中的字段必须是按照数据库存入字段的顺序，否则报错
 			err := row.Scan(&book.Id, &book.BookName, &book.Price, &book.BookDesc)
 			if err != nil {
@@ -110,7 +110,7 @@ func BenchmarkSelectByIndexParallel(b *testing.B) {
 	book := new(Book)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			row := mysqlDB.QueryRow("select * from book where id=?", 19001)
+			row := GetInstance().QueryRow("select * from book where book_name=?", "断舍离")
 			//row.scan中的字段必须是按照数据库存入字段的顺序，否则报错
 			err := row.Scan(&book.Id, &book.BookName, &book.Price, &book.BookDesc)
 			if err != nil {

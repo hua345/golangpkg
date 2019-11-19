@@ -7,7 +7,7 @@ import (
 
 func redisLeafWork(leaf *RedisLeaf, wg *sync.WaitGroup, t *testing.T) {
 	defer wg.Done()
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		t.Log(leaf.NextId())
 	}
 }
@@ -16,9 +16,9 @@ func TestRedisLeaf(t *testing.T) {
 	redisLeaf := NewLeaf(testLeafKey)
 	defer redisLeaf.Close()
 	wg := sync.WaitGroup{}
-	wg.Add(100)
+	wg.Add(5)
 	// create two separate sessions for lock competition
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 5; i++ {
 		go redisLeafWork(redisLeaf, &wg, t)
 	}
 	wg.Wait()

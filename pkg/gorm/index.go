@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	"sync"
 )
 
 type PostgresConfig struct {
@@ -15,30 +16,38 @@ type PostgresConfig struct {
 }
 
 var postgresConfig = &PostgresConfig{
-	UserName: "fang",
-	Password: "123456",
-	Host:     "192.168.137.128",
+	UserName: "postgres",
+	Password: "",
+	Host:     "127.0.0.1",
 	Port:     5432,
-	Database: "fangdb",
+	Database: "db_example",
 }
 
-var gormDB *gorm.DB
+var (
+	once sync.Once
 
-func NewGorm() {
-	// sslmode就是安全验证模式;
-	// sslmode=disable
-	// sslmode=verify-full
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
-	var err error
-	gormDB, err = gorm.Open("postgres", dsn)
-	if err != nil {
-		fmt.Printf("Open gorm failed,err:%v\n", err)
-		return
-	}
-	gormDB.DB().SetMaxIdleConns(16)
-	gormDB.DB().SetMaxOpenConns(128)
-	// 启用Logger，显示详细日志
-	//gormDB.LogMode(true)
-	// 全局禁用表名复数
-	gormDB.SingularTable(true)
+	instance *gorm.DB
+)
+
+func GetInstance() *gorm.DB {
+	once.Do(func() {
+		// sslmode就是安全验证模式;
+		// sslmode=disable
+		// sslmode=verify-full
+		dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
+		var err error
+		instance, err = gorm.Open("postgres", dsn)
+		if err != nil {
+			fmt.Printf("Open gorm failed,err:%v\n", err)
+			return
+		}
+		instance.DB().SetMaxIdleConns(16)
+		instance.DB().SetMaxOpenConns(128)
+		// 启用Logger，显示详细日志
+		//gormDB.LogMode(true)
+		// 全局禁用表名复数
+		instance.SingularTable(true)
+	})
+
+	return instance
 }

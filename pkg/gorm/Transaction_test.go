@@ -7,8 +7,6 @@ import (
 )
 
 func TestTransaction(t *testing.T) {
-	NewGorm()
-	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
 	bookId := leaf.NextId()
 	user := &User{
@@ -20,7 +18,7 @@ func TestTransaction(t *testing.T) {
 	user.CreatedTime = time.Now()
 	user.UpdatedTime = time.Now()
 	// 开启事务
-	tx := gormDB.Begin()
+	tx := GetInstance().Begin()
 	defer func() {
 		if r := recover(); r != nil {
 			// 如果发生错误则执行回滚

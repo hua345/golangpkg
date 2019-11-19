@@ -23,9 +23,9 @@ func redisLockWork(index int, wg *sync.WaitGroup, t *testing.T) {
 }
 func TestRedisLock(t *testing.T) {
 	wg := sync.WaitGroup{}
-	wg.Add(100)
+	wg.Add(50)
 	// create two separate sessions for lock competition
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 50; i++ {
 		go redisLockWork(i, &wg, t)
 	}
 	wg.Wait()

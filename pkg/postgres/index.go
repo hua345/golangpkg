@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"sync"
 )
 
 type PostgresConfig struct {
@@ -15,27 +16,34 @@ type PostgresConfig struct {
 }
 
 var postgresConfig = &PostgresConfig{
-	UserName: "fang",
-	Password: "123456",
-	Host:     "192.168.137.128",
+	UserName: "postgres",
+	Password: "",
+	Host:     "127.0.0.1",
 	Port:     5432,
-	Database: "fangdb",
+	Database: "db_example",
 }
+var (
+	once sync.Once
 
-var postgresDB *sql.DB
+	instance *sql.DB
+)
 
-func NewPostgresDB() {
-	// sslmode就是安全验证模式;
-	// sslmode=disable
-	// sslmode=verify-full
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
-	var err error
-	postgresDB, err = sql.Open("postgres", dsn)
-	if err != nil {
-		fmt.Printf("Open mysql failed,err:%v\n", err)
-		return
-	}
-	postgresDB.SetMaxOpenConns(1024)
-	postgresDB.SetMaxIdleConns(16)
+func GetInstance() *sql.DB {
+	once.Do(func() {
+		// sslmode就是安全验证模式;
+		// sslmode=disable
+		// sslmode=verify-full
+		dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+			postgresConfig.UserName, postgresConfig.Password, postgresConfig.Host, postgresConfig.Port, postgresConfig.Database)
+		var err error
+		instance, err = sql.Open("postgres", dsn)
+		if err != nil {
+			fmt.Printf("Open mysql failed,err:%v\n", err)
+			return
+		}
+		instance.SetMaxOpenConns(1024)
+		instance.SetMaxIdleConns(16)
+	})
+
+	return instance
 }

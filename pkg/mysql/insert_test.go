@@ -7,12 +7,11 @@ import (
 
 func TestInsert(t *testing.T) {
 	NewMysqlDb()
-	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
 	bookId := leaf.NextId()
 	t.Log(bookId)
 	// 预备表达式 用来优化SQL查询 提高性能 减少SQL注入的风险
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := GetInstance().Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,9 +36,8 @@ func TestInsert(t *testing.T) {
 func BenchmarkInsert(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
 	NewMysqlDb()
-	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := GetInstance().Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
 	if err != nil {
 		b.Error(err)
 	}
@@ -66,9 +64,8 @@ func BenchmarkInsert(b *testing.B) {
 func BenchmarkInsertParallel(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
 	NewMysqlDb()
-	redis.NewRedis()
 	leaf := redis.NewLeaf("bookKey")
-	stmt, err := mysqlDB.Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
+	stmt, err := GetInstance().Prepare("insert INTO book(id, book_name,price,book_desc) values(?,?,?,?)")
 	if err != nil {
 		b.Error(err)
 	}
