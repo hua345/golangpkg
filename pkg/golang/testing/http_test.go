@@ -23,20 +23,20 @@ func TestHttp(t *testing.T) {
 		{"statusOk", "https://www.cnblogs.com/test.html", http.StatusBadRequest},
 	}
 	for index, item := range tests {
-		t.Logf("\tTest: %d\tWhen checking %q for status code %d", index, item.Url, item.StatusCode)
+		t.Logf("\t单元测试: %d\t请求 %q 预计结果 %d", index, item.Url, item.StatusCode)
 		{
 			resp, err := http.Get(item.Url)
 			if err != nil {
-				t.Fatalf("Should be able to make the Get call : %v", err)
+				t.Fatalf("请求失败 : %v", err)
 			}
-			t.Logf("Should be able to make the Get call.")
+			t.Logf("请求成功！")
 
 			defer resp.Body.Close()
 
 			if resp.StatusCode == item.StatusCode {
-				t.Logf("Should receive a %d status code.", item.StatusCode)
+				t.Logf("实际结果状态: %d ", item.StatusCode)
 			} else {
-				t.Errorf("Should receive a %d status code : %v", item.StatusCode, resp.StatusCode)
+				t.Errorf("预计结果状态: %d 实际结果状态: %v", item.StatusCode, resp.StatusCode)
 			}
 		}
 	}

@@ -6,10 +6,9 @@ import (
 )
 
 func TestSetNX(t *testing.T) {
-	NewRedis()
 	key := "tryLockName"
 	value := "fangfang"
-	result, err := RedisClient.SetNX(key, value, 5*time.Second).Result()
+	result, err := GetInstance().SetNX(key, value, 5*time.Second).Result()
 	if err != nil {
 		t.Error(err)
 	}
@@ -17,7 +16,7 @@ func TestSetNX(t *testing.T) {
 		t.Log(result)
 		t.Log("获取Redis锁成功")
 	}
-	result, err = RedisClient.SetNX(key, value, 5*time.Second).Result()
+	result, err = GetInstance().SetNX(key, value, 5*time.Second).Result()
 	if err != nil {
 		t.Error(err)
 	}

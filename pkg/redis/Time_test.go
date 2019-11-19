@@ -5,8 +5,7 @@ import (
 )
 
 func TestTime(t *testing.T) {
-	NewRedis()
-	redisTime, err := RedisClient.Time().Result()
+	redisTime, err := GetInstance().Time().Result()
 	if err != nil {
 		t.Error(err)
 	}

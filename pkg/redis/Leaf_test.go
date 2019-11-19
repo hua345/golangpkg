@@ -12,7 +12,6 @@ func redisLeafWork(leaf *RedisLeaf, wg *sync.WaitGroup, t *testing.T) {
 	}
 }
 func TestRedisLeaf(t *testing.T) {
-	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
 	defer redisLeaf.Close()
@@ -29,7 +28,6 @@ func TestRedisLeaf(t *testing.T) {
 //go test -bench=.
 func BenchmarkLeaf(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
-	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
 	defer redisLeaf.Close()
@@ -44,7 +42,6 @@ func BenchmarkLeaf(b *testing.B) {
 //go test -bench=.
 func BenchmarkRedisLeafParallel(b *testing.B) {
 	b.StopTimer() //停止压力测试的时间计数
-	NewRedis()
 	testLeafKey := "myLeafKey"
 	redisLeaf := NewLeaf(testLeafKey)
 	defer redisLeaf.Close()

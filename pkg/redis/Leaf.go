@@ -64,7 +64,7 @@ func (leaf *RedisLeaf) Close() {
 }
 
 func nextId(idKey string) (int64, error) {
-	orderId, err := RedisClient.IncrBy(idKey, 1).Result()
+	orderId, err := GetInstance().IncrBy(idKey, 1).Result()
 	if err != nil {
 		return -1, err
 	}

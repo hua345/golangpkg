@@ -4,39 +4,47 @@ import (
 	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 	"runtime"
+	"sync"
 	"time"
 )
 
-var RedisPools *redis.Pool
-
-var redisHost = "192.168.137.128:6379"
+var redisHost = "127.0.0.1:6379"
 var redisPassword = ""
 
-func NewRedis() error {
-	RedisPools = &redis.Pool{
-		MaxIdle:     20 * runtime.NumCPU(),
-		IdleTimeout: 5 * time.Second,
-		Dial: func() (redis.Conn, error) {
-			pool, err := redis.Dial("tcp",
-				redisHost,
-				redis.DialPassword(redisPassword),
-				redis.DialDatabase(0))
-			if err != nil {
-				return nil, err
-			}
-			return pool, err
-		},
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
-		},
-	}
+var (
+	once sync.Once
 
-	return nil
+	instance *redis.Pool
+)
+
+func GetInstance() *redis.Pool {
+	once.Do(func() {
+		instance = &redis.Pool{
+			MaxIdle:     20 * runtime.NumCPU(),
+			IdleTimeout: 5 * time.Second,
+			Dial: func() (redis.Conn, error) {
+				pool, err := redis.Dial("tcp",
+					redisHost,
+					redis.DialPassword(redisPassword),
+					redis.DialDatabase(0))
+				if err != nil {
+					return nil, err
+				}
+				return pool, err
+			},
+			TestOnBorrow: func(c redis.Conn, t time.Time) error {
+				_, err := c.Do("PING")
+				return err
+			},
+		}
+	})
+
+	return instance
 }
+
 func Set(key string, data interface{}) error {
 	// 从池里获取连接
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	// 用完后将连接放回连接池
 	defer conn.Close()
 	value, err := json.Marshal(data)
@@ -51,7 +59,7 @@ func Set(key string, data interface{}) error {
 }
 func SetStr(key string, value string) error {
 	// 从池里获取连接
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	// 用完后将连接放回连接池
 	defer conn.Close()
 	_, err := conn.Do("SET", key, value)
@@ -62,7 +70,7 @@ func SetStr(key string, value string) error {
 }
 func SetStrWithExpire(key string, value string, second int) error {
 	// 从池里获取连接
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	// 用完后将连接放回连接池
 	defer conn.Close()
 	_, err := conn.Do("SET", key, value, "EX", second)
@@ -74,7 +82,7 @@ func SetStrWithExpire(key string, value string, second int) error {
 
 func Exists(key string) bool {
 	// 从池里获取连接
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	// 用完后将连接放回连接池
 	defer conn.Close()
 
@@ -88,7 +96,7 @@ func Exists(key string) bool {
 
 func GetStr(key string) (string, error) {
 	// 从池里获取连接
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	// 用完后将连接放回连接池
 	defer conn.Close()
 
@@ -101,7 +109,7 @@ func GetStr(key string) (string, error) {
 }
 
 func Delete(key string) (bool, error) {
-	conn := RedisPools.Get()
+	conn := GetInstance().Get()
 	defer conn.Close()
 
 	return redis.Bool(conn.Do("DEL", key))
