@@ -3,6 +3,7 @@ package mutexLearn
 import (
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestBank(t *testing.T) {
@@ -21,4 +22,5 @@ func TestBank(t *testing.T) {
 		y = 1               // B1
 		t.Log("x:", x, " ") // B2
 	}()
+	time.Sleep(1 * time.Second)
 }
