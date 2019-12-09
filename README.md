@@ -2,6 +2,7 @@
 
 ![badge.svg](https://github.com/hua345/golangpkg/workflows/Go/badge.svg)
 [![Build Status](https://travis-ci.com/hua345/golangpkg.svg?branch=master)](https://travis-ci.com/hua345/golangpkg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hua345/golangpkg)](https://goreportcard.com/report/github.com/hua345/golangpkg)
 
 - [algorithm](./pkg/algorithm)
 - [consul](./pkg/consul)
