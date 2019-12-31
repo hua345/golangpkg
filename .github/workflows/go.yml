@@ -25,7 +25,7 @@ jobs:
           fi
 
       - name: test algorithm
-        run: cd pkg/algorithm && go test ./...
+        run: cd pkg/algorithm && go test -v -bench=. -benchmem
       - name: test encrypt
         run: cd pkg/encrypt && go test .
       - name: test golang
