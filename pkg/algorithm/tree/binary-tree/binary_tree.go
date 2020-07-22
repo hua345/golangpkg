@@ -2,6 +2,16 @@ package binarytree
 
 import "fmt"
 
+/**
+二叉树(Binary tree)
+二叉树是一种特殊的数据结构，最多有两个子节点：左子节点和右子节点
+
+   1
+ 2   3
+4 5   6
+   7
+    8
+*/
 type BNode struct {
 	val   int
 	left  *BNode
