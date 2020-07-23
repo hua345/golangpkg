@@ -23,9 +23,6 @@ jobs:
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
               dep ensure
           fi
-
-      - name: test algorithm
-        run: cd pkg/algorithm && go test -v -bench=. -benchmem
       - name: test encrypt
         run: cd pkg/encrypt && go test .
       - name: test golang

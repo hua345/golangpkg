@@ -1,42 +1,71 @@
 package main
 
-import (
-	"strconv"
-)
-
-func isPalindrome(x int) bool {
-	return isPalindrome2(x)
+func romanToInt(s string) int {
+	return romanToInt2(s)
 }
-func isPalindrome1(x int) bool {
-	if x >= 0 && x < 10 {
-		return true
+func romanToInt1(s string) int {
+	var resultNum int = 0
+	romanMap := map[byte]int{
+		'I': 1,
+		'V': 5,
+		'X': 10,
+		'L': 50,
+		'C': 100,
+		'D': 500,
+		'M': 1000,
 	}
-	if x < 0 {
-		return false
+	var data []byte = []byte(s)
+	if len(data) == 1 {
+		value, ok := romanMap[data[0]]
+		if ok {
+			resultNum = value
+		}
+		return resultNum
 	}
-	var data []byte = []byte(strconv.Itoa(x))
-	var status = true
-	middleLen := len(data) / 2
-	for i := 0; i < middleLen; i++ {
-		if data[i] != data[len(data)-i-1] {
-			status = false
-			break
+	for i := len(data) - 1; i >= 1; i-- {
+		nextValue, ok := romanMap[data[i]]
+		preValue, preOk := romanMap[data[i-1]]
+		if ok && preOk {
+			if preValue < nextValue {
+				resultNum = resultNum + (nextValue - preValue)
+				i--
+				if 1 == i {
+					value, ok := romanMap[data[0]]
+					if ok {
+						resultNum = resultNum + value
+					}
+				}
+			} else {
+				if 0 == i-1 {
+					resultNum = resultNum + preValue + nextValue
+				} else {
+					resultNum = resultNum + nextValue
+				}
+			}
 		}
 	}
-	return status
+	return resultNum
 }
-func isPalindrome2(x int) bool {
-	if x >= 0 && x < 10 {
-		return true
+func romanToInt2(s string) int {
+	var resultNum int = 0
+	romanMap := map[byte]int{
+		'I': 1,
+		'V': 5,
+		'X': 10,
+		'L': 50,
+		'C': 100,
+		'D': 500,
+		'M': 1000,
 	}
-	if x < 0 {
-		return false
+	pre := 0
+	for i := len(s) - 1; i >= 0; i-- {
+		cur := romanMap[s[i]]
+		if cur >= pre {
+			resultNum += cur
+		} else {
+			resultNum -= cur
+		}
+		pre = cur
 	}
-	ori := x
-	var n int
-	for x != 0 {
-		n = n*10 + x%10
-		x = x / 10
-	}
-	return ori == n
+	return resultNum
 }

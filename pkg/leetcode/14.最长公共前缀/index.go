@@ -1,42 +1,29 @@
 package main
 
-import (
-	"strconv"
-)
-
-func isPalindrome(x int) bool {
-	return isPalindrome2(x)
-}
-func isPalindrome1(x int) bool {
-	if x >= 0 && x < 10 {
-		return true
+func longestCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
 	}
-	if x < 0 {
-		return false
-	}
-	var data []byte = []byte(strconv.Itoa(x))
-	var status = true
-	middleLen := len(data) / 2
-	for i := 0; i < middleLen; i++ {
-		if data[i] != data[len(data)-i-1] {
-			status = false
-			break
+	var prefixStr string
+	prefixStr = strs[0]
+	for _, value := range strs[1:] {
+		minLen := min(len(value), len(prefixStr))
+		var prefixTemp []byte
+		for i := 0; i < minLen; i++ {
+			if value[i] == prefixStr[i] {
+				prefixTemp = append(prefixTemp, value[i])
+			} else {
+				break
+			}
 		}
+		prefixStr = string(prefixTemp)
 	}
-	return status
+	return prefixStr
 }
-func isPalindrome2(x int) bool {
-	if x >= 0 && x < 10 {
-		return true
+
+func min(a, b int) int {
+	if a >= b {
+		return b
 	}
-	if x < 0 {
-		return false
-	}
-	ori := x
-	var n int
-	for x != 0 {
-		n = n*10 + x%10
-		x = x / 10
-	}
-	return ori == n
+	return a
 }
