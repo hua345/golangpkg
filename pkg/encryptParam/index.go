@@ -29,7 +29,7 @@ func Encrypt(param map[string]interface{}) (*RequestClient, error) {
 	requestParam.RequestJson = string(paramJsonData)
 
 	// 获取加密后的参数
-	xpass, err := encrypt.AesEncrypt(paramJsonData, []byte(aesKey))
+	xpass, err := encrypt.AesEncryptCBC(paramJsonData, []byte(aesKey))
 	if err != nil {
 		return requestParam, err
 	}
