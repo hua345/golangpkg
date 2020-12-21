@@ -38,7 +38,8 @@ func TestAESCBC(t *testing.T) {
 	if string(data) != string(decryptData) {
 		t.Error("AES加解密失败")
 	}
-	c := exec.Command("cmd", "/C", "node", "cryptojsCBCTest.js", string(data), string(aesKey))
+	// c := exec.Command("cmd", "/C", "node", "cryptojsCBCTest.js", string(data), string(aesKey))
+	c := exec.Command("node", "cryptojsCBCTest.js", string(data), string(aesKey))
 	result, err := c.Output()
 	if err != nil {
 		t.Error(err.Error())
@@ -76,7 +77,8 @@ func TestAESCFB(t *testing.T) {
 	if string(data) != string(decryptData) {
 		t.Error("AES加解密失败")
 	}
-	c := exec.Command("cmd", "/C", "node", "cryptojsCFBTest.js", string(data), string(aesKey))
+	// c := exec.Command("cmd", "/C", "node", "cryptojsCFBTest.js", string(data), string(aesKey))
+	c := exec.Command("node", "cryptojsCFBTest.js", string(data), string(aesKey))
 	result, err := c.Output()
 	if err != nil {
 		t.Error(err.Error())
